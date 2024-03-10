@@ -57,22 +57,27 @@ if __name__ == "__main__":
     #     raw.drop_channels(existing_channels_to_drop)
     # print('Channel names after dropping:', raw.info['ch_names'])
 
-    # # Optionally, set a montage (source localizations or topo maps)
-    # channel_coords = {
-    #     'Fp1': (80.8, 26.1, -4.00),  
-    #     'Fp2': (80.8, -26.1, -4.00), 
-    #     'C3': (68.7, 49.7, -5.96), # this is actually AF7
-    #     'C4': (68.7, -49.7, -5.96), # AF8
+    # Optionally, set a montage (source localizations or topo maps)
+    # channel_coords_meters = {
+    #     'Fp1': (0.808, 0.261, -0.04),  
+    #     'Fp2': (0.808, -0.261, -0.04), 
+    #     'AF7': (0.687, 0.497, -0.0596), 
+    #     'AF8': (0.687, -0.497, -0.0596),
     # }
-    # montage = mne.channels.make_dig_montage(ch_pos=channel_coords, coord_frame='head')
+
+    # montage = mne.channels.make_dig_montage(ch_pos=channel_coords_meters, coord_frame='head')
     # raw.set_montage(montage)
+    montage = mne.channels.make_standard_montage('standard_1020')
+    raw.set_montage(montage, match_case=False)
 
     # Filter the raw data
     raw.filter(HIGHPASS, LOWPASS)
 
+    ## Note that we're not extracting "epochs" before ICA due to small numbers of channels ##
     # Perform ICA to find and remove artifacts
-    ica = ICA(n_components=2, random_state=0)
+    ica = ICA(n_components=2, random_state=0) # or n_components=3 depending on what data looks like
     ica.fit(raw)
+    ica.plot_components()
 
     ## Note that automatic algorithms like MARA or RANSAC is less appropriate for 4-channel EEG system ##
     ica_data = ica.get_sources(raw).get_data()# Get the source data (the ICA components' time series)
