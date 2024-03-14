@@ -1,2 +1,2 @@
-# cogwear
-Cogwear EEG preprocessing and main analysis 
+# Fox EEG
+EEG OpenBCI preprocessing and main analysis 
