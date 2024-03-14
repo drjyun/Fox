@@ -1,2 +1,2 @@
 # Fox EEG
-EEG OpenBCI preprocessing and main analysis 
+EEG OpenBCI preprocessing and main analyses 
